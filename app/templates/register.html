@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+</head>
+<body>
+    <h2>Register Account</h2>
+    <form method="POST">
+        <label>Full Name:</label><br>
+        <input type="text" name="fullname" required><br>
+        <label>Email:</label><br>
+        <input type="email" name="email" required><br>
+        <label>Phone:</label><br>
+        <input type="text" name="phone" required><br>
+        <label>Date of Birth:</label><br>
+        <input type="date" name="dob" required><br>
+        <label>Gender:</label><br>
+        <select name="gender" required>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+        </select><br>
+        <label>Address:</label><br>
+        <textarea name="address" required></textarea><br>
+        <label>Password:</label><br>
+        <input type="password" name="password" required><br><br>
+        <button type="submit">Register</button>
+    </form>
+    {% if message %}
+        <p style="color:red">{{ message }}</p>
+    {% endif %}
+</body>
+</html>

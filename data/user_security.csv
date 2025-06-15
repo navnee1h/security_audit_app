@@ -1,0 +1,2 @@
+email,password,password_status,audit_warning
+test@gmail.com,$2b$12$AgqxtS04o8aE2GSDmlhN1u3cOwH68eUSidGUp5f27Ck.HWJangE0i,unchecked,false
