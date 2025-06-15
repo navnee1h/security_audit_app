@@ -7,7 +7,7 @@ SECURITY_CSV = 'data/user_security.csv'
 
 # Ensure both CSVs exist
 for csv_file, headers in [
-    (USER_CSV, ['fullname', 'email', 'phone', 'dob', 'gender', 'address']),
+    (USER_CSV, ['fullname', 'email', 'phone','department', 'dob', 'gender', 'address']),
     (SECURITY_CSV, ['email', 'password', 'password_status', 'audit_warning'])
 ]:
     if not os.path.exists(csv_file):
@@ -23,6 +23,7 @@ def register():
             'fullname': request.form['fullname'],
             'email': request.form['email'],
             'phone': request.form['phone'],
+            'department': request.form['department'],
             'dob': request.form['dob'],
             'gender': request.form['gender'],
             'address': request.form['address'],
@@ -36,7 +37,7 @@ def register():
         with open(USER_CSV, 'a', newline='') as f:
             writer = csv.writer(f)
             writer.writerow([
-                data['fullname'], data['email'], data['phone'],
+                data['fullname'], data['email'], data['phone'],data['department'],
                 data['dob'], data['gender'], data['address']
             ])
 
