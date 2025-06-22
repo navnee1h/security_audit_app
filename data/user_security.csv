@@ -1,3 +1,2 @@
-email,password,password_status,audit_warning
-test@gmail.com,$2b$12$KMxz.2D0/BVkvQcW9ptFseR5/Gx9AhUY/yYWussY3A0aNDGall1BW,unchecked,false
-samannew@gmail.com,$2b$12$fdvGZPYM1qTTS1fNbQ5yVOEFhV4YnUpwtq/ayFsz06x/nA.EV5qji,unchecked,false
+email,password,length_ok,has_upper,has_lower,has_digit,has_special,security_warning
+test@gmail.com,$2b$12$WCMMITeyh43T79Q4Y6pMGO5ou3EMERIYqyvopNDaGcfQcgomzfMqy,false,false,true,false,false,true

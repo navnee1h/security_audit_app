@@ -10,12 +10,22 @@ LOG_FILE = 'data/login-log.txt'
 # Ensure necessary files exist
 for csv_file, headers in [
     (USER_CSV, ['fullname', 'email', 'phone','department', 'dob', 'gender', 'address']),
-    (SECURITY_CSV, ['email', 'password', 'password_status', 'audit_warning'])
+    (SECURITY_CSV, ['email', 'password', 'length_ok', 'has_upper', 'has_lower', 'has_digit', 'has_special', 'security_warning'])
 ]:
     if not os.path.exists(csv_file):
         with open(csv_file, 'w', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(headers)
+
+# ---------------------- PASSWORD ANALYSIS FUNCTION ----------------------
+def get_password_flags(password):
+    length_ok = len(password) >= 8
+    has_upper = any(c.isupper() for c in password)
+    has_lower = any(c.islower() for c in password)
+    has_digit = any(c.isdigit() for c in password)
+    has_special = any(c in '!@#$%^&*()-_=+[{]}\|;:\'",<.>/?`~' for c in password)
+    security_warning = not all([length_ok, has_upper, has_lower, has_digit, has_special])
+    return length_ok, has_upper, has_lower, has_digit, has_special, security_warning
 
 # ---------------------- REGISTER ----------------------
 @user_bp.route('/register', methods=['GET', 'POST'])
@@ -36,6 +46,9 @@ def register():
         # Hash password
         hashed_pw = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
+        # Analyze password strength
+        length_ok, has_upper, has_lower, has_digit, has_special, security_warning = get_password_flags(data['password'])
+
         # Save user info
         with open(USER_CSV, 'a', newline='') as f:
             writer = csv.writer(f)
@@ -48,14 +61,17 @@ def register():
         with open(SECURITY_CSV, 'a', newline='') as f:
             writer = csv.writer(f)
             writer.writerow([
-                data['email'], hashed_pw, 'unchecked', 'false'
+                data['email'], hashed_pw,
+                str(length_ok).lower(), str(has_upper).lower(), str(has_lower).lower(),
+                str(has_digit).lower(), str(has_special).lower(),
+                str(security_warning).lower()
             ])
 
         return redirect(url_for('user.login'))
 
     return render_template('register.html', message=message)
 
-# ---------------------- LOGIN (with logging) ----------------------
+# ---------------------- LOGIN ----------------------
 @user_bp.route('/login', methods=['GET', 'POST'])
 def login():
     message = ''
@@ -78,7 +94,7 @@ def login():
                         login_status = 'SUCCESS'
                     break
 
-        # ✅ Log attempt
+        # Log attempt
         with open(LOG_FILE, 'a') as log:
             log.write(f"[{login_time}] {login_status} LOGIN: {email} from IP: {ip_address}\n")
 
@@ -107,24 +123,30 @@ def reset_password():
         return redirect(url_for('user.login'))
 
     message = ''
-
     if request.method == 'POST':
         email = session['email']
         old_password = request.form['old_password'].encode('utf-8')
-        new_password = request.form['new_password'].encode('utf-8')
+        new_password_raw = request.form['new_password']
 
         rows = []
         updated = False
+
+        # Analyze new password
+        length_ok, has_upper, has_lower, has_digit, has_special, security_warning = get_password_flags(new_password_raw)
 
         with open(SECURITY_CSV, 'r') as f:
             reader = csv.DictReader(f)
             for row in reader:
                 if row['email'] == email:
                     if bcrypt.checkpw(old_password, row['password'].encode('utf-8')):
-                        hashed = bcrypt.hashpw(new_password, bcrypt.gensalt())
-                        row['password'] = hashed.decode('utf-8')
-                        row['password_status'] = 'unchecked'
-                        row['audit_warning'] = 'false'
+                        hashed = bcrypt.hashpw(new_password_raw.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+                        row['password'] = hashed
+                        row['length_ok'] = str(length_ok).lower()
+                        row['has_upper'] = str(has_upper).lower()
+                        row['has_lower'] = str(has_lower).lower()
+                        row['has_digit'] = str(has_digit).lower()
+                        row['has_special'] = str(has_special).lower()
+                        row['security_warning'] = str(security_warning).lower()
                         updated = True
                     else:
                         message = "❌ Old password is incorrect."
