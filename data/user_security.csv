@@ -1,2 +1,2 @@
 email,password,length_ok,has_upper,has_lower,has_digit,has_special,security_warning
-test@gmail.com,$2b$12$WCMMITeyh43T79Q4Y6pMGO5ou3EMERIYqyvopNDaGcfQcgomzfMqy,false,false,true,false,false,true
+test@gmail.com,$2b$12$9YJNoqM5vSCHuAh.64KRm.45AJ1dA0XlxdQRMTtnjxiofRQWpjwfS,true,true,true,true,true,false
