@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Activating Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #00305F;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #fff;
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    .loader {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #ffffff;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <div class="loader"></div>
+    <h2>Activating Admin Dashboard...</h2>
+    <p>This may take a moment.</p>
+  </div>
+
+  <script>
+    fetch("/admin/activate-dashboard", { method: "POST" })
+      .then(() => {
+        setTimeout(() => {
+          window.location.href = "/admin/dashboard";
+        }, 6000);  // match your background time
+      });
+  </script>
+</body>
+</html>
