@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Loading Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #00305F;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #fff;
+      font-family: sans-serif;
+      flex-direction: column;
+    }
+
+    .loader {
+      width: 100px;
+      height: 100px;
+      border: 10px solid #f3f3f3;
+      border-top: 10px solid #ffffff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="loader"></div>
+  <h2>Loading Dashboard...</h2>
+  <p>Analyzing password data...</p>
+
+  <script>
+    setTimeout(() => {
+      window.location.href = "/admin/dashboard/view";
+    }, 5000);  // enough time for background thread to start
+  </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
-from app.utils.password_analysis import analyze_personal_passwords
+from app.utils.personal_info_passwords import analyze_personal_passwords
 import csv, os, bcrypt
 from datetime import datetime
 import threading
@@ -12,7 +12,7 @@ LOG_FILE = 'data/login-log.txt'
 # Ensure necessary files exist
 for csv_file, headers in [
     (USER_CSV, ['fullname', 'email', 'phone','department', 'dob', 'gender', 'address']),
-    (SECURITY_CSV, ['email', 'password', 'length_ok', 'has_upper', 'has_lower', 'has_digit', 'has_special', 'security_warning'])
+    (SECURITY_CSV, ['email', 'password', 'length_ok', 'has_upper', 'has_lower', 'has_digit', 'has_special'])
 ]:
     if not os.path.exists(csv_file):
         with open(csv_file, 'w', newline='') as f:
@@ -25,9 +25,8 @@ def get_password_flags(password):
     has_upper = any(c.isupper() for c in password)
     has_lower = any(c.islower() for c in password)
     has_digit = any(c.isdigit() for c in password)
-    has_special = any(c in '!@#$%^&*()-_=+[{]}\|;:\'",<.>/?`~' for c in password)
-    security_warning = not all([length_ok, has_upper, has_lower, has_digit, has_special])
-    return length_ok, has_upper, has_lower, has_digit, has_special, security_warning
+    has_special = any(c in '!@#$%^&*()-_=+[{]}\\|;:\'",<.>/?`~' for c in password)
+    return length_ok, has_upper, has_lower, has_digit, has_special
 
 # ---------------------- REGISTER ----------------------
 @user_bp.route('/register', methods=['GET', 'POST'])
@@ -49,7 +48,7 @@ def register():
         hashed_pw = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
         # Analyze password strength
-        length_ok, has_upper, has_lower, has_digit, has_special, security_warning = get_password_flags(data['password'])
+        length_ok, has_upper, has_lower, has_digit, has_special = get_password_flags(data['password'])
 
         # Save user info
         with open(USER_CSV, 'a', newline='') as f:
@@ -66,11 +65,10 @@ def register():
                 data['email'], hashed_pw,
                 str(length_ok).lower(), str(has_upper).lower(), str(has_lower).lower(),
                 str(has_digit).lower(), str(has_special).lower(),
-                str(security_warning).lower()
             ])
 
         # Run password analysis in background
-        def background_analysis():
+        def used_personal_info():
             users_csv = 'data/users.csv'
             security_csv = 'data/user_security.csv'
             output_csv = 'data/user_security.csv'
@@ -78,8 +76,8 @@ def register():
             analyze_personal_passwords(users_csv, security_csv, rules_txt, output_csv)
             print("[DEBUG] Password analysis updated after registration.")
 
-        threading.Thread(target=background_analysis).start()
-
+        threading.Thread(target=used_personal_info).start()
+        print("[DEBUG] User created successfully")
         return redirect(url_for('user.login'))
 
     return render_template('register.html', message=message)
@@ -146,7 +144,7 @@ def reset_password():
         updated = False
 
         # Analyze new password strength
-        length_ok, has_upper, has_lower, has_digit, has_special, security_warning = get_password_flags(new_password_raw)
+        length_ok, has_upper, has_lower, has_digit, has_special = get_password_flags(new_password_raw)
 
         with open(SECURITY_CSV, 'r') as f:
             reader = csv.DictReader(f)
@@ -160,7 +158,6 @@ def reset_password():
                         row['has_lower'] = str(has_lower).lower()
                         row['has_digit'] = str(has_digit).lower()
                         row['has_special'] = str(has_special).lower()
-                        row['security_warning'] = str(security_warning).lower()
                         updated = True
                     else:
                         message = "❌ Old password is incorrect."
@@ -174,16 +171,16 @@ def reset_password():
                 writer.writerows(rows)
             message = "✅ Password updated successfully."
 
-            # Start password analysis in background
-            def background_analysis():
+            # Start password analysis in background // background_analysis()
+            def used_personal_info():
                 users_csv = 'data/users.csv'
                 security_csv = 'data/user_security.csv'
                 output_csv = 'data/user_security.csv'
                 rules_txt = 'app/utils/patterns/rules.txt'
                 analyze_personal_passwords(users_csv, security_csv, rules_txt, output_csv)
-                print("[DEBUG] Password analysis updated after reset.")
+                print("[DEBUG] Password analysis updated after resetting password.")
 
-            threading.Thread(target=background_analysis).start()
+            threading.Thread(target=used_personal_info).start()
 
         else:
             message = "❌ User not found or update failed."

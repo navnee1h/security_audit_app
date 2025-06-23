@@ -1,3 +1,2 @@
-email,password,length_ok,has_upper,has_lower,has_digit,has_special,security_warning,used_personal_info
-test@gmail.com,$2b$12$xCNIhRvx6CzdRINKvqYJNuybuz30.CtEzAGs.NRSUeQshxpy2u7h.,false,false,true,false,false,true,true
-akash@gmail.com,$2b$12$86e45CwiSykB7tqa6cYj1OTG8Pv8a1gwQuxWbAKi0yqvBjzpT.4Hm,false,false,true,false,false,true,true
+email,password,length_ok,has_upper,has_lower,has_digit,has_special,used_personal_info
+test@gmail.com,$2b$12$EtBlSDgKrdhK8j7KQu/uQeUXxo6Y.pB4phtpbuxYtWA77HkoavRU.,true,false,true,true,true,false

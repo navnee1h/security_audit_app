@@ -1,50 +1,117 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Activating Dashboard</title>
+  <title>Activate Dashboard</title>
   <style>
     body {
       margin: 0;
       background-color: #00305F;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      color: #fff;
       font-family: sans-serif;
+      color: white;
       text-align: center;
     }
 
-    .loader {
-      border: 8px solid #f3f3f3;
-      border-top: 8px solid #ffffff;
-      border-radius: 50%;
-      width: 80px;
-      height: 80px;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
+    .activate-btn {
+      background-color: white;
+      color: #00305F;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      animation: pulse 1.5s infinite;
+      margin-top: 20px;
     }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .progress-container {
+      width: 80%;
+      height: 25px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      margin-top: 30px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background-color: #00FFCC;
+      border-radius: 20px;
+      transition: width 0.3s ease-in-out;
+    }
+
+    .status-text {
+      margin-top: 10px;
+      font-size: 16px;
+      display: none;
+      animation: fadein 1s ease-in-out infinite alternate;
+    }
+
+    @keyframes fadein {
+      0% { opacity: 0.6; }
+      100% { opacity: 1; }
     }
   </style>
 </head>
 <body>
-  <div>
-    <div class="loader"></div>
-    <h2>Activating Admin Dashboard...</h2>
-    <p>This may take a moment.</p>
+  <h2>Activate Admin Dashboard</h2>
+  <p>Click the button below to activate the password auditing system.</p>
+  <button class="activate-btn" id="activateBtn">Activate Now</button>
+
+  <div class="progress-container" id="progressContainer">
+    <div class="progress-bar" id="progressBar"></div>
   </div>
+  <div class="status-text" id="statusText">Analyzing passwords, please wait...</div>
 
   <script>
-    fetch("/admin/activate-dashboard", { method: "POST" })
-      .then(() => {
-        setTimeout(() => {
-          window.location.href = "/admin/dashboard";
-        }, 6000);  // match your background time
-      });
+    document.getElementById('activateBtn').addEventListener('click', function () {
+      const btn = this;
+      const bar = document.getElementById('progressBar');
+      const container = document.getElementById('progressContainer');
+      const text = document.getElementById('statusText');
+
+      btn.disabled = true;
+      btn.style.display = 'none';
+      container.style.display = 'block';
+      text.style.display = 'block';
+
+      // Start fake progress bar
+      let progress = 0;
+      const interval = setInterval(() => {
+        if (progress < 95) {
+          progress += Math.random() * 5;
+          bar.style.width = progress + "%";
+        }
+      }, 300);
+
+      // Send AJAX request
+      fetch('/admin/activate-dashboard', { method: 'POST' })
+        .then(response => {
+          clearInterval(interval);
+          bar.style.width = '100%';
+          text.innerText = "Activation Complete! Redirecting...";
+          setTimeout(() => {
+            window.location.href = "/admin/dashboard/view";
+          }, 1500);
+        })
+        .catch(error => {
+          text.innerText = "Something went wrong. Try again.";
+          console.error("Activation error:", error);
+        });
+    });
   </script>
 </body>
 </html>

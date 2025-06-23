@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, session, url_for
 import threading
 from app.utils.dashboard_status import is_activated, set_activated
-from app.utils.password_analysis import analyze_personal_passwords
+from app.utils.personal_info_passwords import analyze_personal_passwords
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -30,21 +30,50 @@ def admin_dashboard():
         return redirect(url_for('admin.admin_login'))
 
     if not is_activated():
-        def background_task():
-            print("[DEBUG] Starting personal password analysis...")
-            users_csv = 'data/users.csv'
-            security_csv = 'data/user_security.csv'
-            output_csv = 'data/user_security.csv'
-            rules_txt = 'app/utils/patterns/rules.txt'
+        return render_template('activate_dashboard.html')
 
-            analyze_personal_passwords(users_csv, security_csv, rules_txt, output_csv)
-            set_activated()  # Set JSON flag after completion
-            print("[DEBUG] Dashboard activated!")
+    # Run background analysis every time after activation
+    def background_task():
+        users_csv = 'data/users.csv'
+        security_csv = 'data/user_security.csv'
+        output_csv = 'data/user_security.csv'
+        rules_txt = 'app/utils/patterns/rules.txt'
+        print("[DEBUG] Background password analysis (on dashboard visit)...")
+        analyze_personal_passwords(users_csv, security_csv, rules_txt, output_csv)
 
-        threading.Thread(target=background_task).start()
-        return render_template('activate_dashboard.html')  # Show loading screen
+    threading.Thread(target=background_task).start()
 
-    return render_template('admin_dashboard.html')  # Show dashboard
+    # Show loading animation before final dashboard
+    return render_template('loading_dashboard.html')
+
+
+
+
+@admin_bp.route('/admin/dashboard/view')
+def view_dashboard():
+    return render_template('admin_dashboard.html')
+
+
+@admin_bp.route('/admin/activate-dashboard', methods=['POST'])
+def activate_dashboard():
+    set_activated()
+    
+    # Run analysis immediately after activation
+    def background_task():
+        print("[DEBUG] First-time activation analysis...")
+        users_csv = 'data/users.csv'
+        security_csv = 'data/user_security.csv'
+        output_csv = 'data/user_security.csv'
+        rules_txt = 'app/utils/patterns/rules.txt'
+        analyze_personal_passwords(users_csv, security_csv, rules_txt, output_csv)
+        print("[DEBUG] First-time dashboard activated.")
+
+    threading.Thread(target=background_task).start()
+    return ('', 204)
+
+@admin_bp.route('/admin/loading')
+def loading_dashboard():
+    return render_template('loading.html')
 
 @admin_bp.route('/admin/logout')
 def admin_logout():
