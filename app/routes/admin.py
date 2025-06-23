@@ -15,14 +15,19 @@ def admin_login():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-
         if email == ADMIN_EMAIL and password == ADMIN_PASSWORD:
             session['admin'] = True
             return redirect(url_for('admin.admin_dashboard'))
         else:
             message = "Invalid admin credentials."
-
     return render_template('admin_login.html', message=message)
+
+
+@admin_bp.route('/admin/logout')
+def admin_logout():
+    session.pop('admin', None)
+    return redirect(url_for('admin.admin_login'))
+
 
 @admin_bp.route('/admin/dashboard')
 def admin_dashboard():
@@ -31,23 +36,10 @@ def admin_dashboard():
 
     if not is_activated():
         return render_template('activate_dashboard.html')
-
-    # Run background analysis every time after activation
-    def background_task():
-        users_csv = 'data/users.csv'
-        security_csv = 'data/user_security.csv'
-        output_csv = 'data/user_security.csv'
-        rules_txt = 'app/utils/patterns/rules.txt'
-        print("[DEBUG] Background password analysis (on dashboard visit)...")
-        analyze_personal_passwords(users_csv, security_csv, rules_txt, output_csv)
-
-    threading.Thread(target=background_task).start()
-
+    # DO ANY ARRANGEMENT OF DATA FOR SHOWING IT ON DASHBOARD-->ON BACKGROUND(THREADING)
+    print("arrangement of data to dashboard goes here") #--------------
     # Show loading animation before final dashboard
     return render_template('loading_dashboard.html')
-
-
-
 
 @admin_bp.route('/admin/dashboard/view')
 def view_dashboard():
@@ -57,25 +49,10 @@ def view_dashboard():
 @admin_bp.route('/admin/activate-dashboard', methods=['POST'])
 def activate_dashboard():
     set_activated()
-    
-    # Run analysis immediately after activation
-    def background_task():
-        print("[DEBUG] First-time activation analysis...")
-        users_csv = 'data/users.csv'
-        security_csv = 'data/user_security.csv'
-        output_csv = 'data/user_security.csv'
-        rules_txt = 'app/utils/patterns/rules.txt'
-        analyze_personal_passwords(users_csv, security_csv, rules_txt, output_csv)
-        print("[DEBUG] First-time dashboard activated.")
-
-    threading.Thread(target=background_task).start()
     return ('', 204)
 
 @admin_bp.route('/admin/loading')
 def loading_dashboard():
     return render_template('loading.html')
 
-@admin_bp.route('/admin/logout')
-def admin_logout():
-    session.pop('admin', None)
-    return redirect(url_for('admin.admin_login'))
+
