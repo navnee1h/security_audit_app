@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
+from app.utils.password_analysis import analyze_personal_passwords
 import csv, os, bcrypt
 from datetime import datetime
+import threading
 
 user_bp = Blueprint('user', __name__)
 USER_CSV = 'data/users.csv'
@@ -67,9 +69,21 @@ def register():
                 str(security_warning).lower()
             ])
 
+        # Run password analysis in background
+        def background_analysis():
+            users_csv = 'data/users.csv'
+            security_csv = 'data/user_security.csv'
+            output_csv = 'data/user_security.csv'
+            rules_txt = 'app/utils/patterns/rules.txt'
+            analyze_personal_passwords(users_csv, security_csv, rules_txt, output_csv)
+            print("[DEBUG] Password analysis updated after registration.")
+
+        threading.Thread(target=background_analysis).start()
+
         return redirect(url_for('user.login'))
 
     return render_template('register.html', message=message)
+
 
 # ---------------------- LOGIN ----------------------
 @user_bp.route('/login', methods=['GET', 'POST'])
@@ -131,7 +145,7 @@ def reset_password():
         rows = []
         updated = False
 
-        # Analyze new password
+        # Analyze new password strength
         length_ok, has_upper, has_lower, has_digit, has_special, security_warning = get_password_flags(new_password_raw)
 
         with open(SECURITY_CSV, 'r') as f:
@@ -159,10 +173,23 @@ def reset_password():
                 writer.writeheader()
                 writer.writerows(rows)
             message = "✅ Password updated successfully."
+
+            # Start password analysis in background
+            def background_analysis():
+                users_csv = 'data/users.csv'
+                security_csv = 'data/user_security.csv'
+                output_csv = 'data/user_security.csv'
+                rules_txt = 'app/utils/patterns/rules.txt'
+                analyze_personal_passwords(users_csv, security_csv, rules_txt, output_csv)
+                print("[DEBUG] Password analysis updated after reset.")
+
+            threading.Thread(target=background_analysis).start()
+
         else:
             message = "❌ User not found or update failed."
 
     return render_template('reset_password.html', message=message)
+
 
 # ---------------------- LOGOUT ----------------------
 @user_bp.route('/logout', methods=['POST'])

@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, session, url_for
 import threading
 from app.utils.dashboard_status import is_activated, set_activated
+from app.utils.password_analysis import analyze_personal_passwords
 
 admin_bp = Blueprint('admin', __name__)
 
-# Hardcoded admin credentials (you can change this to use admin.csv if needed)
+# Hardcoded admin credentials
 ADMIN_EMAIL = 'admin'
 ADMIN_PASSWORD = 'admin'
 
@@ -12,8 +13,8 @@ ADMIN_PASSWORD = 'admin'
 def admin_login():
     message = ''
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+        email = request.form.get('email')
+        password = request.form.get('password')
 
         if email == ADMIN_EMAIL and password == ADMIN_PASSWORD:
             session['admin'] = True
@@ -29,21 +30,22 @@ def admin_dashboard():
         return redirect(url_for('admin.admin_login'))
 
     if not is_activated():
-        return render_template('activate_dashboard.html')  # show loading page
+        def background_task():
+            print("[DEBUG] Starting personal password analysis...")
+            users_csv = 'data/users.csv'
+            security_csv = 'data/user_security.csv'
+            output_csv = 'data/user_security.csv'
+            rules_txt = 'app/utils/patterns/rules.txt'
 
-    return render_template('admin_dashboard.html')
+            analyze_personal_passwords(users_csv, security_csv, rules_txt, output_csv)
+            set_activated()  # Set JSON flag after completion
+            print("[DEBUG] Dashboard activated!")
 
-@admin_bp.route('/admin/activate-dashboard', methods=['POST'])
-def activate_dashboard():
-    def background_task():
-        print("[DEBUG] Starting password analysis...") # real analyzis here
-        import time
-        time.sleep(5) # dummy sleep
-        set_activated()
-        print("[DEBUG] Dashboard activated!")
+        threading.Thread(target=background_task).start()
+        return render_template('activate_dashboard.html')  # Show loading screen
 
-    threading.Thread(target=background_task).start()
-    return '', 200
+    return render_template('admin_dashboard.html')  # Show dashboard
+
 @admin_bp.route('/admin/logout')
 def admin_logout():
     session.pop('admin', None)

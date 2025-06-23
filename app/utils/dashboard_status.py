@@ -1,6 +1,6 @@
 import os, json
 
-STATUS_FILE = 'data/dashboard_status.json'
+STATUS_FILE = 'data/status.json'
 
 def is_activated():
     if not os.path.exists(STATUS_FILE):
