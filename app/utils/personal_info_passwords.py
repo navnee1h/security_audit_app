@@ -2,7 +2,7 @@ import csv
 import os
 import bcrypt
 from itertools import product
-
+#---------------------- WANT TO IMPROVE THIS [CORRECT THE LOGIC]-----------------------------
 def modify_word(word):
     return [word.lower(), word.title()]
 
