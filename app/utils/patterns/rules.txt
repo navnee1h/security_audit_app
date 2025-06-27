@@ -1,3 +1,4 @@
-fullname
+password
 email
 address
+kerala

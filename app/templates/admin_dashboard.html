@@ -1,10 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Admin Dashboard</title>
+    <meta charset="UTF-8">
+    <title>Enterprime Password Security Audit System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h2>Welcome to Admin Dashboard</h2>
-    <p>This is where you’ll activate the password audit tool, view stats, etc.</p>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <h2 class="logo">☁</h2>
+            <nav>
+                <ul>
+                    <li>🏠 Dashboard</li>
+                    <li>📊 Charts</li>
+                    <li>📄 Reports</li>
+                    <li>🔁 Logs</li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="main">
+            <header class="topbar">
+                <h1>Enterprime password security audit system</h1>
+                <div class="icons">🔔 ℹ️ 👤</div>
+            </header>
+
+            <section class="departments">
+                <div>Sales<br><span>150</span></div>
+                <div>Marketing<br><span>100</span></div>
+                <div>HR<br><span>10</span></div>
+                <div>Developers<br><span>299</span></div>
+                <div>Staff<br><span>112</span></div>
+            </section>
+
+            <section class="main-content">
+                <div class="chart-box">
+                    <h3>Bar chart</h3>
+                    <canvas id="barChart"></canvas>
+                </div>
+                <div class="alerts-heatmap">
+                    <div class="alerts">
+                        <h3>Alerts</h3>
+                        <ul>
+                            <li>⚠️ password breach detected <span>15 min ago</span></li>
+                            <li>⚠️ weak password found <span>20 min ago</span></li>
+                            <li>⚠️ personal password found <span>22 min ago</span></li>
+                        </ul>
+                    </div>
+                    <div class="heatmap">
+                        <h3>Heatmap (Department-Level View)</h3>
+                        <canvas id="heatmapChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="stats">
+                <div><span>7500</span><br>employees</div>
+                <div><span>1200</span><br>personal info password</div>
+                <div><span>980</span><br>common password</div>
+                <div><span>1500</span><br>weak password</div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 </body>
 </html>
