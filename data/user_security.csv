@@ -2,3 +2,4 @@ email,password,length_ok,has_upper,has_lower,has_digit,has_special,common_passwo
 test@gmail.com,$2b$12$UGV724gmpdXWGtv2tH2kt.jMVG4hsbXdEmz0mFbzjj0oAo2gKdSei,true,false,true,false,false,true,false
 navaneeth@gmail.com,$2b$12$suKrywWp2xmUW2jZBeUDDexpjNqN3Qh7tzDvvgl2hQshAJVBqYIqe,false,false,true,false,false,false,true
 password@gmail.com,$2b$12$yEHDUmQi2WFvmtUZfxV/WuGjUnQwF7pScBjOlPJOuTNNf8aJBwwa6,false,false,true,false,false,false,false
+nandu@gmail.com,$2b$12$uZcAWt8TlfUS7auPKjPKoe/w4GCr/MVKjRC0DUNcwrKjk.RLe5pUW,false,false,true,false,false,false,true
