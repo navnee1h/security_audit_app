@@ -41,9 +41,9 @@ def admin_dashboard():
     # Show loading animation before final dashboard
     return render_template('loading_dashboard.html')
 
-@admin_bp.route('/admin/dashboard/view')
-def view_dashboard():
-    return render_template('admin_dashboard.html')
+#@admin_bp.route('/admin/dashboard/view')
+#def view_dashboard():
+#   return render_template('admin_dashboard.html')
 
 
 @admin_bp.route('/admin/activate-dashboard', methods=['POST'])

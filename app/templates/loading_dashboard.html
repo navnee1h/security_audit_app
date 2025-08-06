@@ -48,7 +48,7 @@
 
   <script>
     setTimeout(function () {
-      window.location.href = "/admin/dashboard/view";
+      window.location.href = "{{ url_for('dashboard.serve_dashboard_index') }}";
     }, 4000); // Show animation for 4 seconds before redirect
   </script>
 </body>

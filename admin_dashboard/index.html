@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Dashboard - Voler Admin Dashboard</title>
+        <link rel="stylesheet" href="assets/css/bootstrap.css" />
+        <link rel="stylesheet" href="assets/vendors/chartjs/Chart.min.css" />
+        <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css" />
+        <link rel="stylesheet" href="assets/css/app.css" />
+        <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon" />
+    </head>
+    <body>
+        <div id="app">
+            <div id="sidebar" class="active">
+                <div class="sidebar-wrapper active">
+                    <div class="sidebar-header">
+                        <img src="assets/images/logo.svg" alt="" srcset="" />
+                    </div>
+                    <div class="sidebar-menu">
+                        <ul class="menu">
+                            <li class="sidebar-title">Main Menu</li>
+                            <li class="sidebar-item active">
+                                <a href="index.html" class="sidebar-link">
+                                    <i data-feather="home" width="20"></i>
+                                    <span>Overview</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="analytics.html" class="sidebar-link">
+                                    <i data-feather="pie-chart" width="20"></i>
+                                    <span>Analytics</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="users.html" class="sidebar-link">
+                                    <i data-feather="users" width="20"></i>
+                                    <span>Users</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="report.html" class="sidebar-link">
+                                    <i data-feather="file-text" width="20"></i>
+                                    <span>Report</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="log.html" class="sidebar-link">
+                                    <i data-feather="activity" width="20"></i>
+                                    <span>Logs and activity</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <button class="sidebar-toggler btn x">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="main">
+                <nav class="navbar navbar-header navbar-expand navbar-light">
+                    <a class="sidebar-toggler" href="#">
+                        <span class="navbar-toggler-icon"></span>
+                    </a>
+                    <button class="btn navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav d-flex align-items-center navbar-light ms-auto">
+                            <li class="dropdown nav-icon">
+                                <a href="#" data-bs-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+                                    <div class="d-lg-inline-block">
+                                        <i data-feather="bell"></i>
+                                    </div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-large">
+                                    <h6 class="py-2 px-4 border-bottom">Notifications</h6>
+                                    <ul id="notificationList" class="list-group list-group-flush px-2">
+                                        <!-- JS will inject items here -->
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="dropdown nav-icon me-2">
+                                <a href="#" data-bs-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+                                    <div class="d-lg-inline-block">
+                                        <i data-feather="info"></i>
+                                    </div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a class="dropdown-item">
+                                        Hi this is some information about this software bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" data-bs-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+                                    <div class="avatar me-1">
+                                        <img src="assets/images/avatar/avatar-s-1.png" alt="" srcset="" />
+                                    </div>
+                                    <div class="d-none d-md-block d-lg-inline-block">Hi, Admin</div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a class="dropdown-item" href="/admin/logout"> <i data-feather="log-out"></i> Logout </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="main-content container-fluid">
+                    <div class="page-title">
+                        <h3>Password Security Audit Dashboard</h3>
+                        <p class="text-subtitle text-muted">Audit and visualize risky user password behavior</p>
+                    </div>
+                    <section class="section">
+                        <!-- Top Cards -->
+                        <div class="row mb-2">
+                            <div class="col-12 col-md-3">
+                                <div class="card card-statistic">
+                                    <div class="card-body p-0" id="card-total-users">
+                                        <div class="d-flex flex-column px-3 py-3">
+                                            <h3 class="card-title text-white">TOTAL USERS</h3>
+                                            <p id="balance" class="card-value text-white">0</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <div class="card card-statistic">
+                                    <div class="card-body p-0" id="card-strong">
+                                        <div class="d-flex flex-column px-3 py-3">
+                                            <h3 class="card-title text-white">STRONG PASSWORDS</h3>
+                                            <p id="revenue" class="card-value text-white">0</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <div class="card card-statistic">
+                                    <div class="card-body p-0" id="card-weak">
+                                        <div class="d-flex flex-column px-3 py-3">
+                                            <h3 class="card-title text-white">WEAK PASSWORDS</h3>
+                                            <p id="orders" class="card-value text-white">0</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <div class="card card-statistic">
+                                    <div class="card-body p-0" id="card-common">
+                                        <div class="d-flex flex-column px-3 py-3">
+                                            <h3 class="card-title text-white">COMMON PASSWORDS</h3>
+                                            <p id="sales" class="card-value text-white">0</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Graph + Risk Cards -->
+                        <div class="row mb-4">
+                            <div class="col-md-8">
+                                <!-- Bar Chart: Password Stats -->
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-heading">Password Strength Overview</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4 col-12">
+                                                <!-- JS will inject overall score below -->
+                                                <h1 class="mt-5" id="summaryScore">0%</h1>
+                                                <p class="text-xs">
+                                                    <span class="text-green"> <i data-feather="bar-chart" width="15"></i> Overall Score </span>
+                                                </p>
+                                                <div class="legends">
+                                                    <div class="legend d-flex align-items-center">
+                                                        <div class="w-3 h-3 rounded-full bg-orange me-2"></div>
+                                                        <span class="text-xs">Missing Uppercase</span>
+                                                    </div>
+                                                    <div class="legend d-flex align-items-center">
+                                                        <div class="w-3 h-3 rounded-full bg-red me-2"></div>
+                                                        <span class="text-xs">Missing Digit</span>
+                                                    </div>
+                                                    <div class="legend d-flex align-items-center">
+                                                        <div class="w-3 h-3 rounded-full bg-yellow me-2"></div>
+                                                        <span class="text-xs">Common Password</span>
+                                                    </div>
+                                                    <div class="legend d-flex align-items-center">
+                                                        <div class="w-3 h-3 rounded-full bg-purple me-2"></div>
+                                                        <span class="text-xs">Used Personal Info</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8 col-12">
+                                                <!-- Bar chart will render here -->
+                                                <canvas id="bar"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- User Password Audit Section -->
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h4 class="card-title">User Password Audit</h4>
+                                    </div>
+                                    <!-- Search Bar -->
+                                    <div class="px-3 pt-2">
+                                        <input id="searchInput" type="text" class="form-control" placeholder="Search users by name, email, or department" />
+                                    </div>
+                                    <div class="card-body px-0 pb-0">
+                                        <div class="table-responsive" style="max-height: 625px; overflow-y: auto;">
+                                            <table class="table mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Email</th>
+                                                        <th>Phone</th>
+                                                        <th>Department</th>
+                                                        <th>Password Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="auditTableBody">
+                                                    <!-- Injected dynamically here -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Radial Chart -->
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4>Risk Summary</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="radialBars"></div>
+                                    </div>
+                                </div>
+                                <!-- Task/Progress Card (Optional Feature Dev) -->
+                                <div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h4 class="card-title">
+      <i class="bx bx-check font-medium-5 pe-1"></i>Recent Login Activity
+    </h4>
+  </div>
+  <div class="card-body px-3 py-2">
+    <ul id="recentLoginList" class="list-group list-group-flush">
+      <!-- JS will inject logs here -->
+    </ul>
+  </div>
+</div>
+
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <script src="assets/js/feather-icons/feather.min.js"></script>
+        <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+        <script src="assets/js/app.js"></script>
+        <script src="assets/vendors/chartjs/Chart.min.js"></script>
+        <script src="assets/vendors/apexcharts/apexcharts.min.js"></script>
+        <script src="assets/js/pages/dashboard.js"></script>
+        <script src="assets/js/main.js"></script>
+    </body>
+</html>

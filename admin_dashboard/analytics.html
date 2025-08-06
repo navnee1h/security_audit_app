@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Voler Admin Dashboard</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+    <link rel="stylesheet" href="assets/vendors/chartjs/Chart.min.css">
+    <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
+    <link rel="stylesheet" href="assets/css/app.css">
+    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
+    <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
+  </head>
+  <body>
+    <div id="app">
+      <div id="sidebar" class='active'>
+        <div class="sidebar-wrapper active">
+          <div class="sidebar-header">
+            <img src="assets/images/logo.svg" alt="" srcset="">
+          </div>
+          <div class="sidebar-menu">
+            <ul class="menu">
+              <li class='sidebar-title'>Main Menu</li>
+              <li class="sidebar-item  ">
+                <a href="index.html" class='sidebar-link'>
+                  <i data-feather="home" width="20"></i>
+                  <span>Overview</span>
+                </a>
+              </li>
+              <li class="sidebar-item active">
+                <a href="analytics.html" class='sidebar-link'>
+                  <i data-feather="pie-chart" width="20"></i>
+                  <span>Analytics</span>
+                </a>
+              </li>
+              <li class="sidebar-item">
+                <a href="users.html" class='sidebar-link'>
+                  <i data-feather="users" width="20"></i>
+                  <span>Users</span>
+                </a>
+              </li>
+              <li class="sidebar-item ">
+                <a href="report.html" class='sidebar-link'>
+                  <i data-feather="file-text" width="20"></i>
+                  <span>Report</span>
+                </a>
+              </li>
+              <li class="sidebar-item ">
+                <a href="log.html" class='sidebar-link'>
+                  <i data-feather="activity" width="20"></i>
+                  <span>Logs and activity</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <button class="sidebar-toggler btn x">
+            <i data-feather="x"></i>
+          </button>
+        </div>
+      </div>
+      <div id="main">
+        <nav class="navbar navbar-header navbar-expand navbar-light">
+          <a class="sidebar-toggler" href="#">
+            <span class="navbar-toggler-icon"></span>
+          </a>
+          <button class="btn navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav d-flex align-items-center navbar-light ms-auto">
+
+              <li class="dropdown nav-icon me-2">
+                <a href="#" data-bs-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+                  <div class="d-lg-inline-block">
+                    <i data-feather="info"></i>
+                  </div>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end">
+                  <a class="dropdown-item"> Hi this is some information about this software bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla</a>
+                </div>
+              </li>
+              <li class="dropdown">
+                <a href="#" data-bs-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+                  <div class="avatar me-1">
+                    <img src="assets/images/avatar/avatar-s-1.png" alt="" srcset="">
+                  </div>
+                  <div class="d-none d-md-block d-lg-inline-block">Hi, Admin</div>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end">
+                  <a class="dropdown-item" href="#">
+                    <i data-feather="log-out"></i> Logout </a>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <div class="main-content container-fluid">
+<section class="section py-0">
+  <!-- Analytics Page Heading -->
+  <div class="page-title mb-4">
+    <h3>Password Security Audit Analytics</h3>
+    <p class="text-subtitle text-muted">Audit and visualize risky user password behavior with advanced metrics.</p>
+  </div>
+
+  <div class="row gx-2 gy-2">
+    <!-- Department-wise Password Issues -->
+    <div class="col-md-8 col-12">
+      <div class="card h-100">
+        <div class="card-header pb-2 pt-3">
+          <h4 class="card-title mb-0">Department-wise Password Issues</h4>
+        </div>
+        <div class="card-body p-2">
+          <canvas id="departmentBarChart" style="height: 350px; width: 100%;"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Password Strength Distribution Pie Chart -->
+    <div class="col-md-4 col-12">
+      <div class="card h-100">
+        <div class="card-header pb-2 pt-3">
+          <h4 class="card-title mb-0">Password Strength Distribution</h4>
+        </div>
+        <div class="card-body p-2">
+          <canvas id="strengthPieChart" style="height: 350px; width: 100%;"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Login Activity Trend -->
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header pb-2 pt-3">
+          <h4 class="card-title mb-0">Login Activity Over Time</h4>
+        </div>
+        <div class="card-body p-2">
+          <canvas id="loginLineChart" style="height: 350px; width: 100%;"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<!-- Required scripts -->
+<script src="assets/vendors/chartjs/Chart.min.js"></script>
+<script src="assets/js/pages/analytics_page.js"></script>
+
+
+
+        </div>
+      </div>
+    </div>
+    <script src="assets/js/feather-icons/feather.min.js"></script>
+    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script src="assets/vendors/chartjs/Chart.min.js"></script>
+    <script src="assets/vendors/apexcharts/apexcharts.min.js"></script>
+    <script src="assets/js/pages/log_page.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
+    <script src="assets/vendors/chartjs/Chart.min.js"></script>
+<script src="assets/js/pages/analytics_page.js"></script>
+
+  </body>
+</html>
