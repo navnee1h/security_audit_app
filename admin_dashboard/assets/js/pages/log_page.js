@@ -1,62 +1,83 @@
-// assets/js/pages/log_page.js
+document.addEventListener("DOMContentLoaded", async function () {
+    const tableBody = document.getElementById("logsTableBody");
+    const logTable = document.querySelector("#logTable");
 
-// Sample logs (you can replace this with dynamic fetch or CSV parsing later)
-const rawLogs = `
-[2025-06-23 19:13:08] SUCCESS LOGIN: test@gmail.com from IP: 127.0.0.1
-[2025-06-23 23:24:04] FAILED LOGIN: test@gmail.com from IP: 127.0.0.1
-[2025-06-23 23:25:06] FAILED LOGIN: test@gmail.com from IP: 127.0.0.1
-[2025-06-23 23:25:16] SUCCESS LOGIN: test@gmail.com from IP: 127.0.0.1
-[2025-06-24 17:48:22] SUCCESS LOGIN: test@gmail.com from IP: 127.0.0.1
-[2025-06-26 23:40:08] SUCCESS LOGIN: password@gmail.com from IP: 127.0.0.1
-`;
+    /**
+     * Renders the log entries into the HTML table.
+     * @param {Array} logs - An array of log objects from the API.
+     */
+    function renderLogs(logs) {
+        // Clear any old or dummy data from the table
+        tableBody.innerHTML = "";
 
-// HTML Table container
-const tableBody = document.getElementById("logsTableBody");
+        // If there are no logs, display a helpful message
+        if (!logs || logs.length === 0) {
+            const row = tableBody.insertRow();
+            const cell = row.insertCell();
+            cell.colSpan = 4; // Span across all columns
+            cell.textContent = "No login logs were found in the data file.";
+            cell.style.textAlign = 'center';
+            return;
+        }
 
-// Parse log lines
-function parseLogLine(line) {
-  const match = line.match(/\[(.*?)\] (SUCCESS|FAILED) LOGIN: (.*?) from IP: (.*)/);
-  if (!match) return null;
-  return {
-    timestamp: match[1],
-    status: match[2],
-    email: match[3],
-    ip: match[4]
-  };
-}
+        // Loop through each log from the API and create a table row
+        for (const log of logs) {
+            const row = document.createElement("tr");
+            
+            // The status ('Success' or 'Failed') comes directly from the backend
+            const statusClass = log.status === "Success" ? "text-success" : "text-danger";
 
-// Render the log entries
-function renderLogs() {
-  const logLines = rawLogs.trim().split("\n");
-  for (const line of logLines) {
-    const log = parseLogLine(line);
-    if (!log) continue;
+            row.innerHTML = `
+                <td>${log.timestamp}</td>
+                <td><span class="${statusClass}">${log.status}</span></td>
+                <td>${log.email}</td>
+                <td>${log.ip}</td>
+            `;
 
-    const row = document.createElement("tr");
-    const statusClass = log.status === "SUCCESS" ? "text-success" : "text-danger";
+            tableBody.appendChild(row);
+        }
+    }
 
-    row.innerHTML = `
-      <td>${log.timestamp}</td>
-      <td><span class="${statusClass}">${log.status}</span></td>
-      <td>${log.email}</td>
-      <td>${log.ip}</td>
-    `;
+    /**
+     * Main function to fetch data and initialize the page.
+     */
+    async function initializePage() {
+        try {
+            // Fetch the data from the API endpoint we created
+            const response = await fetch('/dashboard/api/data');
+            if (!response.ok) {
+                throw new Error(`Network response was not ok: ${response.statusText}`);
+            }
+            const data = await response.json();
 
-    tableBody.appendChild(row);
-  }
-}
+            // Use the 'logs' array from the API response to render the table
+            renderLogs(data.logs);
 
-// Initialize on DOM ready
-document.addEventListener("DOMContentLoaded", function () {
-  renderLogs();
+            // Initialize the simple-datatables library AFTER the table is populated
+            if (logTable) {
+                new simpleDatatables.DataTable(logTable, {
+                    searchable: true,
+                    perPage: 10,
+                    labels: {
+                        placeholder: "Search in logs...",
+                        noRows: "No logs found",
+                        info: "Showing {start} to {end} of {rows} entries",
+                    }
+                });
+            }
 
-  // Optional: initialize DataTable
-  const logTable = document.querySelector("#logTable");
-  if (logTable) {
-    new simpleDatatables.DataTable(logTable, {
-      searchable: true,
-      fixedHeight: true,
-      perPage: 10,
-    });
-  }
+        } catch (error) {
+            console.error("Failed to fetch or render log data:", error);
+            // Display a user-friendly error message in the table
+            const row = tableBody.insertRow();
+            const cell = row.insertCell();
+            cell.colSpan = 4;
+            cell.textContent = "Error loading data. Please check the console for details.";
+            cell.style.textAlign = 'center';
+            cell.style.color = 'red';
+        }
+    }
+
+    // Run the main function when the page is ready
+    initializePage();
 });

@@ -1,4 +1,0 @@
-password
-email
-address
-kerala

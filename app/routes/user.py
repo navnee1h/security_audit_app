@@ -1,7 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from app.utils.personal_info_passwords import analyze_personal_passwords
-from app.utils.common_password import is_common_password  # [ADDED]
-import csv, os, bcrypt
+from app.utils.common_password import is_common_password
+import csv
+import os
+import bcrypt
 from datetime import datetime
 import threading
 
@@ -13,7 +15,7 @@ LOG_FILE = 'data/login-log.txt'
 # Ensure necessary files exist
 for csv_file, headers in [
     (USER_CSV, ['fullname', 'email', 'phone','department', 'dob', 'gender', 'address']),
-    (SECURITY_CSV, ['email', 'password', 'length_ok', 'has_upper', 'has_lower', 'has_digit', 'has_special', 'common_password'])  # [UPDATED]
+    (SECURITY_CSV, ['email', 'password', 'length_ok', 'has_upper', 'has_lower', 'has_digit', 'has_special', 'common_password', 'used_personal_info'])
 ]:
     if not os.path.exists(csv_file):
         with open(csv_file, 'w', newline='') as f:
@@ -45,14 +47,8 @@ def register():
             'password': request.form['password']
         }
 
-
         # Check if the password is common
-        is_common = is_common_password(data['password'])  # [ADDED]
-
-        # COMMENT: THIS PASSWORD IS TOO COMMON. PLEASE CHOOSE A STRONGER ONE.
-        # if is_common:
-        #     message = 'THIS PASSWORD IS TOO COMMON. PLEASE CHOOSE A STRONGER ONE.'
-        #     return render_template('register.html', message=message)
+        is_common = is_common_password(data['password'])
 
         # Hash password
         hashed_pw = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
@@ -68,33 +64,31 @@ def register():
                 data['dob'], data['gender'], data['address']
             ])
 
-        # Save security info with common_password column [UPDATED]
+        # Save security info
         with open(SECURITY_CSV, 'a', newline='') as f:
             writer = csv.writer(f)
             writer.writerow([
                 data['email'], hashed_pw,
                 str(length_ok).lower(), str(has_upper).lower(), str(has_lower).lower(),
                 str(has_digit).lower(), str(has_special).lower(),
-                str(is_common).lower()  # [ADDED] new column: common_password
+                str(is_common).lower(),
+                'false'  # Default value for used_personal_info
             ])
 
-        # Run password analysis in background
-        def used_personal_info():
+        # Run personal password analysis in background
+        def background_personal_info_check():
             users_csv = 'data/users.csv'
             security_csv = 'data/user_security.csv'
             output_csv = 'data/user_security.csv'
-            rules_txt = 'app/utils/patterns/rules.txt'
-            analyze_personal_passwords(users_csv, security_csv, rules_txt, output_csv)
-            print("[DEBUG] Password analysis updated after registration.")
+            # The unused rules.txt argument is now removed from the call
+            analyze_personal_passwords(users_csv, security_csv, output_csv)
+            print("[DEBUG] Personal info analysis updated after registration.")
 
-        threading.Thread(target=used_personal_info).start()
+        threading.Thread(target=background_personal_info_check).start()
         print("[DEBUG] User created successfully")
         return redirect(url_for('user.login'))
 
     return render_template('register.html', message=message)
-
-
-
 
 # ---------------------- LOGIN ----------------------
 @user_bp.route('/login', methods=['GET', 'POST'])
@@ -131,7 +125,6 @@ def login():
                         session['user'] = row['fullname']
                         session['email'] = email
                         return render_template('user_dashboard.html', name=row['fullname'])
-
             # Fallback
             session['user'] = email
             session['email'] = email
@@ -152,7 +145,7 @@ def reset_password():
         email = session['email']
         old_password = request.form['old_password'].encode('utf-8')
         new_password_raw = request.form['new_password']
-        is_common = is_common_password(new_password_raw)  # [ADDED]
+        is_common = is_common_password(new_password_raw)
 
         rows = []
         updated = False
@@ -172,7 +165,7 @@ def reset_password():
                         row['has_lower'] = str(has_lower).lower()
                         row['has_digit'] = str(has_digit).lower()
                         row['has_special'] = str(has_special).lower()
-                        row['common_password'] = str(is_common).lower()  # [ADDED]
+                        row['common_password'] = str(is_common).lower()
                         updated = True
                     else:
                         message = "❌ Old password is incorrect."
@@ -186,23 +179,20 @@ def reset_password():
                 writer.writerows(rows)
             message = "✅ Password updated successfully."
 
-            # Start password analysis in background // background_analysis()
-            def used_personal_info():
+            # Start personal password analysis in background
+            def background_personal_info_check():
                 users_csv = 'data/users.csv'
                 security_csv = 'data/user_security.csv'
                 output_csv = 'data/user_security.csv'
-                rules_txt = 'app/utils/patterns/rules.txt'
-                analyze_personal_passwords(users_csv, security_csv, rules_txt, output_csv)
-                print("[DEBUG] Password analysis updated after resetting password.")
+                # The unused rules.txt argument is now removed from the call
+                analyze_personal_passwords(users_csv, security_csv, output_csv)
+                print("[DEBUG] Personal info analysis updated after resetting password.")
 
-            threading.Thread(target=used_personal_info).start()
-
+            threading.Thread(target=background_personal_info_check).start()
         else:
             message = "❌ User not found or update failed."
 
     return render_template('reset_password.html', message=message)
-
-
 
 # ---------------------- LOGOUT ----------------------
 @user_bp.route('/logout', methods=['POST'])

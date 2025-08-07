@@ -1,88 +1,111 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const tableBody = document.getElementById("usersTableBody");
-  const departments = ["HR", "Sales", "Tech", "Support", "Finance"];
+document.addEventListener("DOMContentLoaded", async function () {
+    const tableBody = document.getElementById("usersTableBody");
+    const userTable = document.querySelector("#userTable");
 
-  const getRandomItem = arr => arr[Math.floor(Math.random() * arr.length)];
-  const getRandomBool = (prob = 0.5) => Math.random() < prob;
-
-  function generateDummyUsers(count = 100) {
-    const dummyUsers = [];
-    for (let i = 0; i < count; i++) {
-      const firstName = `User${i + 1}`;
-      const email = `user${i + 1}@example.com`;
-      const phone = `9${Math.floor(100000000 + Math.random() * 900000000)}`;
-      const department = getRandomItem(departments);
-      const user = {
-        fullname: firstName,
-        email: email,
-        phone: phone,
-        department: department,
-        length_ok: getRandomBool(0.8),
-        has_upper: getRandomBool(0.6),
-        has_lower: true,
-        has_digit: getRandomBool(0.7),
-        has_special: getRandomBool(0.5),
-        common_password: getRandomBool(0.2),
-        used_personal_info: getRandomBool(0.3)
-      };
-      dummyUsers.push(user);
+    /**
+     * Gets the correct CSS class for the status badge based on the status string.
+     * @param {string} status - The password status ('Strong', 'Weak', 'Common').
+     * @returns {string} A CSS class name.
+     */
+    function getBadgeClass(status) {
+        switch (status) {
+            case "Weak": return "bg-danger";
+            case "Common": return "bg-warning";
+            case "Strong": return "bg-success";
+            default: return "bg-secondary";
+        }
     }
-    return dummyUsers;
-  }
 
-  function getPasswordStatus(user) {
-    if (user.common_password) return "Common";
-    if (!user.length_ok || !user.has_upper || !user.has_digit) return "Weak";
-    return "Strong";
-  }
+    /**
+     * Generates a human-readable string of reasons for a password's status.
+     * @param {object} user - The user object from the API.
+     * @returns {string} A comma-separated list of reasons.
+     */
+    function getPasswordReason(user) {
+        const reasons = [];
+        if (user.common_password) reasons.push("Common password");
+        if (user.used_personal_info) reasons.push("Uses personal info");
+        if (!user.length_ok) reasons.push("Too short");
+        if (!user.has_upper) reasons.push("No uppercase letter");
+        if (!user.has_digit) reasons.push("No digit");
+        if (!user.has_special) reasons.push("No special character");
 
-  function getPasswordReason(user) {
-    const reasons = [];
-    if (!user.length_ok) reasons.push("Too short");
-    if (!user.has_upper) reasons.push("No uppercase");
-    if (!user.has_digit) reasons.push("No digit");
-    if (!user.has_special) reasons.push("No special char");
-    if (user.common_password) reasons.push("Common password");
-    if (user.used_personal_info) reasons.push("Used personal info");
-    return reasons.join(", ");
-  }
-
-  function getBadgeClass(status) {
-    switch (status) {
-      case "Weak": return "bg-danger";
-      case "Common": return "bg-warning";
-      case "Strong": return "bg-success";
-      default: return "bg-secondary";
+        // If the password is 'Strong', the reasons array will be empty.
+        return reasons.length > 0 ? reasons.join(", ") : "N/A";
     }
-  }
 
-  // 1. Generate and inject dummy users into HTML table
-  const users = generateDummyUsers(100);
-  for (const user of users) {
-    const status = getPasswordStatus(user);
-    const reason = getPasswordReason(user);
-    const badgeClass = getBadgeClass(status);
+    /**
+     * Renders the user data into the HTML table.
+     * @param {Array} users - An array of user objects from the API.
+     */
+    function renderUsersTable(users) {
+        tableBody.innerHTML = ""; // Clear any dummy data
 
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${user.fullname}</td>
-      <td>${user.email}</td>
-      <td>${user.phone}</td>
-      <td>${user.department}</td>
-      <td><span class="badge ${badgeClass}">${status}</span></td>
-      <td><small>${reason}</small></td>
-      <td><button class="btn btn-sm btn-outline-primary">Notify</button></td>
-    `;
-    tableBody.appendChild(row);
-  }
+        if (!users || users.length === 0) {
+            const row = tableBody.insertRow();
+            const cell = row.insertCell();
+            cell.colSpan = 7; // Span all 7 columns of the table
+            cell.textContent = "No user data found.";
+            cell.style.textAlign = 'center';
+            return;
+        }
 
-  // 2. Initialize simple-datatables AFTER injecting data
-  const userTable = document.querySelector("#userTable");
-  if (userTable) {
-    new simpleDatatables.DataTable(userTable, {
-      searchable: true,
-      fixedHeight: true,
-      perPage: 10,
-    });
-  }
+        for (const user of users) {
+            const status = user.password_status; // Get status directly from the API data
+            const reason = getPasswordReason(user); // Calculate the reason string
+            const badgeClass = getBadgeClass(status); // Get the badge color
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${user.fullname}</td>
+                <td>${user.email}</td>
+                <td>${user.phone}</td>
+                <td>${user.department}</td>
+                <td><span class="badge ${badgeClass}">${status}</span></td>
+                <td><small>${reason}</small></td>
+                <td><button class="btn btn-sm btn-outline-primary">Notify</button></td>
+            `;
+            tableBody.appendChild(row);
+        }
+    }
+
+    /**
+     * Main function to initialize the page.
+     */
+    async function initializePage() {
+        try {
+            const response = await fetch('/dashboard/api/data');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            
+            // Render the table using the 'users' array from the API response
+            renderUsersTable(data.users);
+
+            // Initialize the simple-datatables library AFTER the table is populated
+            if (userTable) {
+                new simpleDatatables.DataTable(userTable, {
+                    searchable: true,
+                    perPage: 10,
+                    labels: {
+                        placeholder: "Search users...",
+                        noRows: "No users found",
+                        info: "Showing {start} to {end} of {rows} entries",
+                    }
+                });
+            }
+
+        } catch (error) {
+            console.error("Failed to fetch user data:", error);
+            const row = tableBody.insertRow();
+            const cell = row.insertCell();
+            cell.colSpan = 7;
+            cell.textContent = "Error loading user data.";
+            cell.style.textAlign = 'center';
+            cell.style.color = 'red';
+        }
+    }
+
+    initializePage();
 });

@@ -27,7 +27,7 @@ def generate_wordlist(user_row):
     words += [user_row['phone'], user_row['phone'][-4:], user_row['phone'][:4]]
     return list(set(filter(lambda x: len(x) >= 4, words)))  # unique and length check
 
-def analyze_personal_passwords(users_csv_path, user_security_csv_path, rules_txt_path, output_path):
+def analyze_personal_passwords(users_csv_path, user_security_csv_path, output_path):
     with open(users_csv_path, 'r') as user_file, open(user_security_csv_path, 'r') as sec_file:
         users = list(csv.DictReader(user_file))
         security = list(csv.DictReader(sec_file))
