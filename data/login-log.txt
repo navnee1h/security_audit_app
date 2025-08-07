@@ -11,3 +11,8 @@
 [2025-08-07 18:23:27] FAILED LOGIN: user1@gmail.com from IP: 127.0.0.1
 [2025-08-07 18:23:38] FAILED LOGIN: user2@gmail.com from IP: 127.0.0.1
 [2025-08-07 18:28:47] SUCCESS LOGIN: secure@gmail.com from IP: 127.0.0.1
+[2025-08-07 19:45:02] FAILED LOGIN: sunitha@gmail.com from IP: 127.0.0.1
+[2025-08-07 19:45:25] FAILED LOGIN: sunitha@gmail.com from IP: 127.0.0.1
+[2025-08-07 19:48:24] FAILED LOGIN: admin@gmail.com from IP: 127.0.0.1
+[2025-08-07 19:56:21] SUCCESS LOGIN: sunitha@gmail.com from IP: 127.0.0.1
+[2025-08-07 19:57:56] SUCCESS LOGIN: sunitha@gmail.com from IP: 127.0.0.1

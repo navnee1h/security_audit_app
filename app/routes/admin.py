@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, session, url_for
 import threading
 from app.utils.dashboard_status import is_activated, set_activated
-from app.utils.personal_info_passwords import analyze_personal_passwords
 
 admin_bp = Blueprint('admin', __name__)
 

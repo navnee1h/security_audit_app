@@ -1,54 +1,53 @@
 import os
 import re
 import pandas as pd
-# ADD session, redirect, and url_for to the imports
 from flask import Blueprint, send_from_directory, jsonify, current_app, session, redirect, url_for
 
-# The blueprint for our dashboard.
 dashboard_bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
 
-
-# =====================================================================
-#  THIS IS THE NEW SECURITY CHECK
-# =====================================================================
 @dashboard_bp.before_request
 def check_admin_session():
-    """
-    This function runs before EVERY request handled by this blueprint.
-    It checks if the 'admin' key is in the session.
-    If not, it redirects the user to the login page.
-    """
     if 'admin' not in session:
         return redirect(url_for('admin.admin_login'))
-# =====================================================================
 
-
-# --- Route to serve the main index.html file ---
 @dashboard_bp.route('/')
 def serve_dashboard_index():
     dashboard_dir = os.path.join(current_app.root_path, '..', 'admin_dashboard')
     return send_from_directory(dashboard_dir, 'index.html')
 
-# --- Route to serve all other files (CSS, JS, other HTML pages) ---
 @dashboard_bp.route('/<path:filename>')
 def serve_dashboard_files(filename):
     dashboard_dir = os.path.join(current_app.root_path, '..', 'admin_dashboard')
     return send_from_directory(dashboard_dir, filename)
 
-# --- The API Endpoint ---
 @dashboard_bp.route('/api/data')
 def get_dashboard_data():
     try:
         data_dir = os.path.join(current_app.root_path, '..', 'data')
-        # ... (the rest of your API code is exactly the same)
         users_df = pd.read_csv(os.path.join(data_dir, 'users.csv'))
         security_df = pd.read_csv(os.path.join(data_dir, 'user_security.csv'))
         
+        # Convert boolean strings from CSV to actual booleans for easier processing
+        for col in ['length_ok', 'has_upper', 'has_lower', 'has_digit', 'has_special', 'common_password', 'used_personal_info']:
+            if col in security_df.columns:
+                 # Map 'true'/'True' to True, everything else to False
+                security_df[col] = security_df[col].astype(str).str.lower() == 'true'
+
         merged_df = pd.merge(users_df, security_df, on='email', how='left')
 
+        # [THIS FUNCTION IS NOW FIXED]
         def get_password_status(row):
-            if row.get('common_password', False): return "Common"
-            if not row.get('length_ok', True) or not row.get('has_upper', True) or not row.get('has_digit', True): return "Weak"
+            """Determines the overall password risk, now including personal info check."""
+            if row.get('common_password', False):
+                return "Common"
+            
+            # A password is 'Weak' if it fails complexity OR uses personal info
+            if not row.get('length_ok', True) or \
+               not row.get('has_upper', True) or \
+               not row.get('has_digit', True) or \
+               row.get('used_personal_info', False): # <-- THE IMPORTANT ADDED CHECK
+                return "Weak"
+            
             return "Strong"
 
         merged_df['password_status'] = merged_df.apply(get_password_status, axis=1)

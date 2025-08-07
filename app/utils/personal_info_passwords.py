@@ -1,59 +1,61 @@
-import csv
-import os
-import bcrypt
 from itertools import product
-#---------------------- WANT TO IMPROVE THIS [CORRECT THE LOGIC]-----------------------------
+
+# --- Helper functions to generate word variations ---
 def modify_word(word):
-    return [word.lower(), word.title()]
+    # Returns a word in lowercase and Titlecase
+    return list(set([word.lower(), word.title()]))
 
-def remove_duplicates(modified_array):
-    seen = set()
-    return [[w for w in words if w not in seen and not seen.add(w)] for words in modified_array]
-
-def get_combinations(word):
-    if not word:
+def get_combinations(text_block):
+    # Creates combinations from a string like "Test User" -> ["testuser", "TestUser", ...]
+    if not text_block or not isinstance(text_block, str):
         return []
-    modified = [modify_word(w) for w in word.split()]
-    clean = remove_duplicates(modified)
-    return [''.join(p) for p in product(*clean)] if clean else []
+    
+    words_to_combine = [modify_word(w) for w in text_block.split()]
+    # Use product to create all combinations, e.g., ('Test', 'User'), ('test', 'user'), etc.
+    return [''.join(p) for p in product(*words_to_combine)]
+
+# --- Main Functions ---
 
 def generate_wordlist(user_row):
-    words = []
-    words += get_combinations(user_row['fullname'])
-    words += get_combinations(user_row['email'].split("@")[0])
-    words += get_combinations(user_row['address'])
-    words += get_combinations(user_row['department'])
-    words += get_combinations(user_row['dob'].replace("-", ""))
-    words += [user_row['phone'], user_row['phone'][-4:], user_row['phone'][:4]]
-    return list(set(filter(lambda x: len(x) >= 4, words)))  # unique and length check
+    """
+    Creates a list of "suspect words" based on a user's personal information.
+    """
+    words = set() # Use a set to handle duplicates automatically
 
-def analyze_personal_passwords(users_csv_path, user_security_csv_path, output_path):
-    with open(users_csv_path, 'r') as user_file, open(user_security_csv_path, 'r') as sec_file:
-        users = list(csv.DictReader(user_file))
-        security = list(csv.DictReader(sec_file))
+    # Add combinations from various text fields
+    words.update(get_combinations(user_row.get('fullname')))
+    if user_row.get('email'):
+        words.update(get_combinations(user_row['email'].split("@")[0]))
+    words.update(get_combinations(user_row.get('address')))
+    words.update(get_combinations(user_row.get('department')))
+    
+    # Add date variations
+    if user_row.get('dob'):
+        words.add(user_row['dob'].replace("-", ""))
+    
+    # Add phone number variations
+    if user_row.get('phone'):
+        phone = user_row['phone']
+        words.add(phone)
+        if len(phone) >= 4:
+            words.add(phone[-4:])
+            words.add(phone[:4])
+            
+    # Return a list of unique words with a minimum length
+    return [word for word in words if len(word) >= 4]
 
-    updated_rows = []
-    for sec_row in security:
-        email = sec_row['email']
-        hashed_password = sec_row['password']
-        matching_user = next((u for u in users if u['email'] == email), None)
-        if not matching_user:
-            continue
-        wordlist = generate_wordlist(matching_user)
+def check_for_personal_info(password, user_row):
+    """
+    Checks if a plaintext password contains any words from the user's personal wordlist.
+    Returns True if personal info is found, False otherwise.
+    """
+    personal_words = generate_wordlist(user_row)
+    password_lower = password.lower()
 
-        used_personal_info = False
-        for word in wordlist:
-            if bcrypt.checkpw(word.encode(), hashed_password.encode()):
-                used_personal_info = True
-                break
-
-        sec_row['used_personal_info'] = str(used_personal_info).lower()
-        updated_rows.append(sec_row)
-
-    fieldnames = updated_rows[0].keys()
-    with open(output_path, 'w', newline='') as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(updated_rows)
-
-    print(f"[INFO] Analysis complete. Result saved to {output_path}")
+    for word in personal_words:
+        if word.lower() in password_lower:
+            # Found a personal word inside the password
+            return True
+            
+    # No personal words were found
+    return False
