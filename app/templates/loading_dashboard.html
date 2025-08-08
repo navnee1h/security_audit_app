@@ -1,55 +1,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Loading Admin Dashboard</title>
-  <style>
-    body {
-      margin: 0;
-      background-color: #00305F;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      font-family: sans-serif;
-      text-align: center;
-    }
+    <title>Loading Admin Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #f4f7f9; /* Consistent light background */
+            color: #555; /* Dark text for readability */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            text-align: center;
+        }
+        
+        .logo {
+            width: 60px;
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
 
-    .spinner {
-      border: 8px solid #f3f3f3;
-      border-top: 8px solid #ffffff;
-      border-radius: 50%;
-      width: 80px;
-      height: 80px;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
-    }
+        .spinner {
+            /* Updated spinner colors to work on a light background */
+            border: 8px solid rgba(0, 123, 255, 0.2); /* Light blue track */
+            border-top: 8px solid #007bff; /* Main blue spinner */
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 25px;
+        }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
-    .message {
-      font-size: 18px;
-      animation: fade 1s ease-in-out infinite alternate;
-    }
+        .message {
+            font-size: 20px;
+            font-weight: 500;
+            animation: fade 1.5s ease-in-out infinite alternate;
+        }
 
-    @keyframes fade {
-      from { opacity: 0.6; }
-      to { opacity: 1; }
-    }
-  </style>
+        @keyframes fade {
+            from { opacity: 0.7; }
+            to { opacity: 1; }
+        }
+    </style>
 </head>
 <body>
-  <div class="spinner"></div>
-  <div class="message">Loading Admin Dashboard...</div>
 
-  <script>
-    setTimeout(function () {
-      window.location.href = "{{ url_for('dashboard.serve_dashboard_index') }}";
-    }, 4000); // Show animation for 4 seconds before redirect
-  </script>
+    <div class="spinner"></div>
+    <div class="message">Loading Admin Dashboard...</div>
+
+    <script>
+        setTimeout(function () {
+            // The template tag will be correctly rendered by the server
+            window.location.href = "{{ url_for('dashboard.serve_dashboard_index') }}";
+        }, 5000); // Animation duration reduced to 3 seconds
+    </script>
 </body>
 </html>

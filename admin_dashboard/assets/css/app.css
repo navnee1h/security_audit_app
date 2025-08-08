@@ -168,10 +168,7 @@ i {
   border: none;
 }
 .card.card-statistic .card-title {
-  text-transform: uppercase;
-  color: #fff;
-  letter-spacing: 0.8px;
-  font-weight: 400;
+  font-weight: 600;
   font-size: 1.3rem;
   margin-bottom: 0;
   margin-top: 5px;

@@ -1,11 +1,11 @@
-from flask import Blueprint, render_template, request, redirect, session, url_for
+from flask import Blueprint, render_template, request, redirect, session, url_for, jsonify 
 import threading
 from app.utils.dashboard_status import is_activated, set_activated
 
 admin_bp = Blueprint('admin', __name__)
 
 # Hardcoded admin credentials
-ADMIN_EMAIL = 'admin'
+ADMIN_EMAIL = 'admin@gmail.com'
 ADMIN_PASSWORD = 'admin'
 
 @admin_bp.route('/admin-login', methods=['GET', 'POST'])
@@ -47,8 +47,9 @@ def admin_dashboard():
 
 @admin_bp.route('/admin/activate-dashboard', methods=['POST'])
 def activate_dashboard():
+    # This function now returns a JSON object, which the front-end can understand.
     set_activated()
-    return ('', 204)
+    return jsonify(status="success", message="Activation complete!")
 
 @admin_bp.route('/admin/loading')
 def loading_dashboard():

@@ -1,90 +1,143 @@
-	<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>User Login</title>
+    <title>Company Portal Login</title>
     <style>
         body {
             margin: 0;
             height: 100vh;
-            background-color: #1e1e2f;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #ffffff;
+            background-color: #f4f7f9; /* Lighter, professional background */
+            color: #333;
         }
 
         .login-container {
-            background-color: #2c2f48;
             padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-            width: 300px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 360px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 50px; /* Adjust size as needed */
+            margin-bottom: 20px;
         }
 
         .login-container h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #ffffff;
+            margin-bottom: 25px;
+            color: #333;
+            font-weight: 600;
+            font-size: 24px;
+        }
+        
+        form {
+            text-align: left;
         }
 
         label {
             display: block;
-            margin: 10px 0 5px;
+            margin-bottom: 8px;
             font-size: 14px;
-            color: #c0c0c0;
+            font-weight: 600;
+            color: #555;
         }
 
         input[type="email"],
         input[type="password"] {
             width: 100%;
-            padding: 10px;
-            border: none;
+            padding: 12px;
+            border: 1px solid #dcdcdc;
             border-radius: 6px;
-            background-color: #3c3f58;
-            color: #ffffff;
-            margin-bottom: 15px;
+            background-color: #fff;
+            color: #333;
+            margin-bottom: 20px;
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
+            transition: border-color 0.3s;
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
         }
 
         button {
             width: 100%;
-            padding: 10px;
-            background-color: #3d71f2;
+            padding: 12px;
+            background-color: #007bff;
             color: white;
             border: none;
             border-radius: 6px;
             cursor: pointer;
+            font-size: 16px;
             font-weight: bold;
             transition: background-color 0.3s;
         }
 
         button:hover {
-            background-color: #305dcc;
+            background-color: #0056b3;
+        }
+        
+        .links {
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        .links a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
         }
 
         .message {
-            text-align: center;
-            margin-top: 15px;
-            color: #ff6b6b;
+            margin-top: 20px;
+            color: #d93025; /* A more standard error red */
+            font-weight: 500;
+        }
+        
+        .footer-text {
+            margin-top: 30px;
+            color: #888;
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <h2>User Login</h2>
+        <svg class="logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" fill="#007bff"/>
+        </svg>
+
+        <h2>Portal Access</h2>
         <form method="POST">
-            <label>Email:</label>
-            <input type="email" name="email" required>
+            <label for="email">Company Email:</label>
+            <input type="email" id="email" name="email" placeholder="e.g., your.name@company.com" required>
 
-            <label>Password:</label>
-            <input type="password" name="password" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
 
-            <button type="submit">Login</button>
+            <button type="submit">Sign In</button>
         </form>
+
+        <div class="links">
+            <a href="#">Forgot Password?</a>
+        </div>
+
         {% if message %}
             <p class="message">{{ message }}</p>
         {% endif %}
+        
+        <p class="footer-text">© 2025 Your Company Name Inc.</p>
     </div>
 </body>
 </html>
