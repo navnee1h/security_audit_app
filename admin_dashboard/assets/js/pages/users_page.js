@@ -56,6 +56,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             const badgeClass = getBadgeClass(status); // Get the badge color
 
             const row = document.createElement("tr");
+
+            // [UPDATED] The button now has a 'btn-notify' class, data attributes to hold
+            // the email and reason, and is disabled if the password is 'Strong'.
             row.innerHTML = `
                 <td>${user.fullname}</td>
                 <td>${user.email}</td>
@@ -63,11 +66,68 @@ document.addEventListener("DOMContentLoaded", async function () {
                 <td>${user.department}</td>
                 <td><span class="badge ${badgeClass}">${status}</span></td>
                 <td><small>${reason}</small></td>
-                <td><button class="btn btn-sm btn-outline-primary">Notify</button></td>
+                <td>
+                    <button
+                        class="btn btn-sm btn-outline-primary btn-notify"
+                        data-email="${user.email}"
+                        data-reason="${reason}"
+                        ${status === 'Strong' ? 'disabled' : ''}>
+                        Notify
+                    </button>
+                </td>
             `;
             tableBody.appendChild(row);
         }
     }
+
+    // ---------------------- [NEW] EVENT LISTENER FOR NOTIFY BUTTONS ----------------------
+    // We use event delegation on the table body to handle clicks on buttons that are
+    // added dynamically.
+    tableBody.addEventListener('click', async function(event) {
+        // Check if a notify button was clicked
+        if (event.target.classList.contains('btn-notify')) {
+            const button = event.target;
+            const email = button.dataset.email;
+            const reason = button.dataset.reason;
+
+            // Give visual feedback that something is happening
+            button.textContent = 'Notifying...';
+            button.disabled = true;
+
+            try {
+                // Send the notification data to the backend
+                const response = await fetch('/admin/notify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: email, reason: reason }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.status === 'success') {
+                    // Success! Update the button to show it's done.
+                    button.textContent = 'Notified';
+                    button.classList.remove('btn-outline-primary');
+                    button.classList.add('btn-success');
+                } else {
+                    // Handle failure from the server
+                    console.error('Failed to send notification:', result.message);
+                    button.textContent = 'Failed';
+                    button.classList.remove('btn-outline-primary');
+                    button.classList.add('btn-danger');
+                }
+
+            } catch (error) {
+                // Handle network or other errors
+                console.error('Error sending notification:', error);
+                button.textContent = 'Error ❌';
+                button.classList.remove('btn-outline-primary');
+                button.classList.add('btn-danger');
+            }
+        }
+    });
 
     /**
      * Main function to initialize the page.

@@ -97,6 +97,7 @@ def login():
         login_status = 'FAILED'
         ip_address = request.remote_addr
         login_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
         with open(SECURITY_CSV, 'r') as f:
             reader = csv.DictReader(f)
             for row in reader:
@@ -106,33 +107,56 @@ def login():
                         authenticated = True
                         login_status = 'SUCCESS'
                     break
+        
         with open(LOG_FILE, 'a') as log:
             log.write(f"[{login_time}] {login_status} LOGIN: {email} from IP: {ip_address}\n")
+
         if authenticated:
+            # [CHANGED] Find user's name and check for notifications
+            user_fullname = "User" # Default name
             with open(USER_CSV, 'r') as f:
                 reader = csv.DictReader(f)
                 for row in reader:
                     if row['email'] == email:
-                        session['user'] = row['fullname']
-                        session['email'] = email
-                        return render_template('user_dashboard.html', name=row['fullname'])
-            session['user'] = email
+                        user_fullname = row['fullname']
+                        break
+            
+            session['user'] = user_fullname
             session['email'] = email
-            return render_template('user_dashboard.html', name=email)
+
+            # [NEW] Check for notifications for this user
+            user_notifications = []
+            with open('data/notifications.csv', 'r') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    # Find unread notifications for the logged-in user
+                    if row['email'] == email and row['is_read'] == 'false':
+                        user_notifications.append({
+                            "message": row['message'],
+                            "reason": row['reason']
+                        })
+            
+            # Pass notifications to the template
+            return render_template('user_dashboard.html', name=user_fullname, notifications=user_notifications)
         else:
             message = "Invalid email or password."
     return render_template('login.html', message=message)
 
+
+# ---------------------- RESET PASSWORD ----------------------
 # ---------------------- RESET PASSWORD ----------------------
 @user_bp.route('/reset-password', methods=['GET', 'POST'])
 def reset_password():
     if 'user' not in session or 'email' not in session:
         return redirect(url_for('user.login'))
+
     message = ''
     if request.method == 'POST':
         email = session['email']
         old_password = request.form['old_password'].encode('utf-8')
         new_password_raw = request.form['new_password']
+        
+        # ... (code to get user_details, check for common/personal info - no changes here) ...
         user_details = {}
         with open(USER_CSV, 'r') as f:
             reader = csv.DictReader(f)
@@ -147,7 +171,6 @@ def reset_password():
             message = 'This new password is too common. Please choose a more secure one.'
             return render_template('reset_password.html', message=message)
         
-        # [CHANGED] Logic now checks the ENFORCE_PERSONAL_INFO_CHECK variable
         if used_personal and ENFORCE_PERSONAL_INFO_CHECK:
             message = 'Your new password must not contain personal information.'
             return render_template('reset_password.html', message=message)
@@ -155,6 +178,7 @@ def reset_password():
         rows = []
         updated = False
         length_ok, has_upper, has_lower, has_digit, has_special = get_password_flags(new_password_raw)
+        
         with open(SECURITY_CSV, 'r') as f:
             reader = csv.DictReader(f)
             for row in reader:
@@ -174,13 +198,38 @@ def reset_password():
                         message = "❌ Old password is incorrect."
                         return render_template('reset_password.html', message=message)
                 rows.append(row)
+
         if updated:
             with open(SECURITY_CSV, 'w', newline='') as f:
                 writer = csv.DictWriter(f, fieldnames=rows[0].keys())
                 writer.writeheader()
                 writer.writerows(rows)
             
-            # [NEW] If not enforcing, flash a warning. Otherwise, flash success.
+            # ---------------------- [NEW LOGIC START] ----------------------
+            # After a successful password update, mark all of this user's
+            # notifications as 'read'.
+            
+            notifications_file = 'data/notifications.csv'
+            updated_notifications = []
+            
+            # Read all notifications
+            with open(notifications_file, 'r', newline='') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    # If the notification is for the current user, change its status
+                    if row['email'] == email:
+                        row['is_read'] = 'true'
+                    updated_notifications.append(row)
+            
+            # Write all notifications (with the updated ones) back to the file
+            if updated_notifications:
+                with open(notifications_file, 'w', newline='') as f:
+                    # Note: We get the fieldnames from the first row of the data we just read
+                    writer = csv.DictWriter(f, fieldnames=updated_notifications[0].keys())
+                    writer.writeheader()
+                    writer.writerows(updated_notifications)
+            # ----------------------- [NEW LOGIC END] -----------------------
+            
             if used_personal and not ENFORCE_PERSONAL_INFO_CHECK:
                 flash('WARNING: Your new password contains personal information and is insecure.', 'warning')
             else:
@@ -188,6 +237,7 @@ def reset_password():
             return redirect(url_for('user.reset_password'))
         else:
             message = "❌ User not found or update failed."
+
     return render_template('reset_password.html', message=message)
 
 # ---------------------- LOGOUT ----------------------

@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, session, url_for, jsonify 
 import threading
 from app.utils.dashboard_status import is_activated, set_activated
+import csv                      # <-- For writing to the csv file
+from datetime import datetime   # <-- For getting the timestamp
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -54,5 +56,28 @@ def activate_dashboard():
 @admin_bp.route('/admin/loading')
 def loading_dashboard():
     return render_template('loading.html')
+@admin_bp.route('/admin/notify', methods=['POST'])
+def notify_user():
+    """
+    Receives a notification request from the admin dashboard and logs it.
+    """
+    if not session.get('admin'):
+        return jsonify(status="error", message="Unauthorized"), 401
 
+    data = request.get_json()
+    email = data.get('email')
+    reason = data.get('reason')
+
+    if not email or not reason:
+        return jsonify(status="error", message="Missing email or reason"), 400
+
+    # Log the notification to our new CSV file
+    with open('data/notifications.csv', 'a', newline='') as f:
+        writer = csv.writer(f)
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # Format: email, message, reason, timestamp, is_read
+        writer.writerow([email, "Password reset required", reason, timestamp, "false"])
+    
+    # Send a success response back to the JavaScript
+    return jsonify(status="success", message=f"Notification sent to {email}.")
 

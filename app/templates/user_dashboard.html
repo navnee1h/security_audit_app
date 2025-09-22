@@ -1,20 +1,145 @@
-<!-- templates/user_dashboard.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>User Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/bootstrap.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .dashboard-card {
+            max-width: 650px;
+            width: 100%;
+            border: none;
+            border-radius: 1rem; /* Softer rounded corners */
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            overflow: hidden; /* Ensures child elements conform to border-radius */
+        }
+
+        .dashboard-card .card-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e9ecef;
+            padding: 1.5rem 2rem;
+        }
+
+        .dashboard-card .card-header h2 {
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 0;
+        }
+
+        .dashboard-card .card-body {
+            padding: 2rem;
+            background-color: #fff;
+        }
+
+        .dashboard-card p {
+            color: #6c757d;
+            font-size: 1.05rem;
+        }
+
+        /* [UPDATED] Styles for the danger alert */
+        .alert-danger-custom {
+            background-color: #f8d7da; /* Light red background */
+            border-left: 5px solid #dc3545; /* Solid red border on the left */
+            border-radius: 0.5rem;
+            padding: 1rem 1.5rem; /* Adjust padding for better look */
+            color: #721c24; /* Darker red text for readability */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08); /* Slight shadow to make it pop */
+            animation: pulse-danger 1.5s infinite alternate; /* Subtle pulsing animation */
+        }
+        
+        @keyframes pulse-danger {
+            from {
+                transform: scale(1);
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            }
+            to {
+                transform: scale(1.01);
+                box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2); /* Red glow on pulse */
+            }
+        }
+
+        .alert-danger-custom .alert-heading {
+            font-weight: 700; /* Bolder heading */
+            color: #dc3545; /* Red heading text */
+            margin-bottom: 0.75rem;
+        }
+        
+        .alert-danger-custom p {
+            color: #721c24; /* Ensure all text in the alert is readable dark red */
+        }
+
+        .actions-area {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            gap: 1rem; /* Space between buttons */
+            align-items: center;
+        }
+        
+        .btn-custom {
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px; /* Pill-shaped buttons */
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome, {{ name }}!</h1>
-    
-    <p>Your account is logged in.</p>
+    <div class="container my-5">
+        <div class="card dashboard-card">
+            <div class="card-header">
+                <h2>Welcome, {{ name }}!</h2>
+            </div>
+            <div class="card-body">
+                
+                {% if notifications %}
+                    {# [UPDATED] Changed class to 'alert-danger-custom' #}
+                    <div class="alert alert-danger-custom" role="alert"> 
+                        {# [UPDATED] Added a visual cue for the notification #}
+                        <h4 class="alert-heading">🚨 Important Notification</h4> 
+                        {% for notification in notifications %}
+                            <p class="mb-2">
+                                <strong>{{ notification.message }}</strong><br>
+                                <small><strong>Reason:</strong> {{ notification.reason }}</small>
+                            </p>
+                            {% if not loop.last %}<hr>{% endif %}
+                        {% endfor %}
+                        <hr>
+                        <p class="mb-0">Please go to the 'Reset Password' page to secure your account.</p>
+                    </div>
+                {% endif %}
+                
+                <p>This is your personal dashboard.</p>
 
-    <a href="{{ url_for('user.reset_password') }}">🔒 Reset Password</a>
-
-    <br><br>
-    <form method="POST" action="{{ url_for('user.logout') }}">
-        <button type="submit">Logout</button>
-    </form>
+                <div class="actions-area">
+                    <a href="/reset-password" class="btn btn-primary btn-custom">Reset Password</a>
+                    <form action="/logout" method="post" class="ms-auto">
+                        <button type="submit" class="btn btn-danger btn-custom">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
-

@@ -1,0 +1,13 @@
+email,message,reason,timestamp,is_read
+test@gmail.com,Password reset required,"Common password, No uppercase letter, No digit, No special character",2025-09-22 22:26:10,false
+demo@gmail.com,Password reset required,"Uses personal info, Too short, No uppercase letter, No digit, No special character",2025-09-22 22:26:43,true
+demo@gmail.com,Password reset required,"Uses personal info, Too short, No uppercase letter, No digit, No special character",2025-09-22 22:33:34,true
+navaneeth@gmail.com,Password reset required,"Uses personal info, Too short, No uppercase letter, No digit, No special character",2025-09-22 23:02:46,false
+password@gmail.com,Password reset required,"Too short, No uppercase letter, No digit, No special character",2025-09-22 23:02:46,false
+nandu@gmail.com,Password reset required,"Uses personal info, Too short, No uppercase letter, No digit, No special character",2025-09-22 23:02:47,false
+test@gmail.com,Password reset required,"Common password, No uppercase letter, No digit, No special character",2025-09-22 23:03:15,false
+navaneeth@gmail.com,Password reset required,"Uses personal info, Too short, No uppercase letter, No digit, No special character",2025-09-22 23:03:16,false
+password@gmail.com,Password reset required,"Too short, No uppercase letter, No digit, No special character",2025-09-22 23:03:16,false
+vignesh@gmail.com,Password reset required,"Uses personal info, Too short, No uppercase letter, No digit, No special character",2025-09-22 23:03:18,false
+nandu@gmail.com,Password reset required,"Uses personal info, Too short, No uppercase letter, No digit, No special character",2025-09-22 23:03:19,false
+demo@gmail.com,Password reset required,"Uses personal info, No uppercase letter, No digit, No special character",2025-09-22 23:03:32,false
