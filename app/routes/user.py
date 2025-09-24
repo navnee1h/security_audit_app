@@ -143,7 +143,11 @@ def login():
     return render_template('login.html', message=message)
 
 
-# ---------------------- RESET PASSWORD ----------------------
+# --- NEW ROUTE FOR THE ROOT URL ---
+@user_bp.route('/')
+def index():
+    """Redirects the root URL to the login page."""
+    return redirect(url_for('user.login'))
 # ---------------------- RESET PASSWORD ----------------------
 @user_bp.route('/reset-password', methods=['GET', 'POST'])
 def reset_password():

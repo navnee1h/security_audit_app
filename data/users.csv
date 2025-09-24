@@ -1,13 +1,51 @@
 fullname,email,phone,department,dob,gender,address
-test,test@gmail.com,123,Sales,2005-02-07,Male,kerala
-navaneeth,navaneeth@gmail.com,123,HR,2001-01-01,Male,kerala
-password,password@gmail.com,123,Sales,2001-01-01,Male,kerala
-nandu,nandu@gmail.com,123123,HR,2005-02-08,Male,kerala
-Vignesh,vignesh@gmail.com,1231231231,Sales,2005-02-07,Male,stas
-Secure_User,secure@gmail.com,123,Sales,2005-02-04,Male,Kerala
-sunitha,sunitha@gmail.com,123,Sales,2004-01-04,Female,kerala
-arjun,arjun@gmail.com,123,Marketing,2005-02-07,Male,test
-Ananya P R,ananyapramod66@gmail.com,9496544916,Sales,2006-06-20,Female,kandiyil meethal ambalathukulangara
-Pramod,pramod@gmail.com,1231231231,Sales,2001-07-20,Male,Kandiyil meethal
-manoj,manoj@gmail.com,1231231235,Sales,1990-12-04,Male,kuppery Nanminda
-demo,demo@gmail.com,123,Sales,2005-02-03,Male,test
+Isaac,isaac917@gmail.com,126855092,IT,1996-08-13,Female,"321, Chahal Circle, Thiruvananthapuram, Kerala, 001338"
+Avi,avi942@gmail.com,702632297,Marketing,1973-04-12,Male,Kollam
+Oni,oni535@gmail.com,336696312,Marketing,1984-01-17,Female,"H.No. 02, Oak Marg, Kannur, Kerala, 235116"
+Gunbir,gunbir813@gmail.com,485451171,Finance,2001-03-03,Female,Malappuram
+Aishani,aishani231@gmail.com,966647391,IT,1966-08-07,Female,Malappuram
+Tripti,tripti558@gmail.com,675770529,IT,1970-02-05,Female,"18, Pathak Road, Kannur, Kerala, 103413"
+Harrison,harrison839@gmail.com,508157429,HR,1976-09-06,Male,Kochi
+Janya,janya843@gmail.com,274648506,HR,1980-08-24,Female,Thiruvananthapuram
+Shaurya,shaurya327@gmail.com,819595113,IT,1976-03-17,Female,Malappuram
+Ekbal,ekbal797@gmail.com,754049436,Marketing,1992-01-13,Male,Thiruvananthapuram
+Yash,yash736@gmail.com,275452091,HR,1984-08-09,Female,"H.No. 83, Bhalla Path, Thrissur, Kerala, 056413"
+Divya,divya197@gmail.com,328306011,Sales,1992-11-29,Male,Malappuram
+Meghana,meghana70@gmail.com,790256940,Finance,1984-06-17,Female,Kottayam
+Alka,alka76@gmail.com,249926919,Marketing,1975-05-03,Male,Kochi
+Adya,adya822@gmail.com,902099969,Finance,1989-11-12,Female,"65/32, Tak Circle, Kottayam, Kerala, 012269"
+Devansh,devansh992@gmail.com,513140753,Finance,1981-02-20,Male,"84, Apte Circle, Kottayam, Kerala, 845146"
+Nakul,nakul79@gmail.com,587182120,HR,1964-11-13,Female,"48/281, Tripathi Road, Palakkad, Kerala, 252880"
+Ekiya,ekiya701@gmail.com,624636385,Finance,1965-07-26,Male,"H.No. 43, Khosla Nagar, Thiruvananthapuram, Kerala, 171822"
+Vaishnavi,vaishnavi487@gmail.com,690347116,IT,1971-10-31,Male,"96/38, Muni Ganj, Thiruvananthapuram, Kerala, 578713"
+Umang,umang924@gmail.com,168747287,HR,1979-04-08,Female,Alappuzha
+Victor,victor801@gmail.com,731832764,Marketing,1974-03-14,Female,"H.No. 031, Narayanan Nagar, Kannur, Kerala, 834738"
+Kevin,kevin2@gmail.com,876693898,Finance,2004-12-15,Male,"97/37, Gupta Marg, Thrissur, Kerala, 165667"
+Chatura,chatura982@gmail.com,823019672,HR,1992-10-29,Male,"10/651, Handa Ganj, Thiruvananthapuram, Kerala, 872624"
+Turvi,turvi62@gmail.com,368227631,Sales,2002-05-01,Female,Kottayam
+Faqid,faqid165@gmail.com,575808013,Sales,1999-06-22,Female,"10/80, Khalsa Zila, Malappuram, Kerala, 677360"
+Nitesh,nitesh734@gmail.com,506919288,Finance,1964-10-27,Male,Kannur
+Madhavi,madhavi127@gmail.com,384759615,Sales,2004-07-26,Male,Kannur
+Suhani,suhani834@gmail.com,406284028,HR,1982-12-02,Female,"87/234, Bhardwaj Ganj, Alappuzha, Kerala, 500978"
+Nakul,nakul524@gmail.com,161073976,Finance,2006-01-16,Male,"H.No. 219, Keer Zila, Kottayam, Kerala, 193990"
+Finn,finn154@gmail.com,550139320,IT,1992-12-30,Male,"85/43, Khare Path, Kannur, Kerala, 624751"
+Aditya,aditya496@gmail.com,592080329,Finance,1991-06-10,Male,Malappuram
+Harish,harish920@gmail.com,178663096,HR,1987-11-06,Male,Kollam
+Yashawini,yashawini459@gmail.com,384756779,Sales,1970-06-05,Male,"H.No. 13, Mane Path, Thrissur, Kerala, 784980"
+Chandani,chandani370@gmail.com,812308209,Sales,1969-03-08,Female,Kochi
+Krish,krish586@gmail.com,383968123,Sales,1969-09-10,Male,"H.No. 824, Kade Road, Kannur, Kerala, 348740"
+George,george529@gmail.com,781057736,Sales,1982-12-11,Female,Kollam
+Aradhana,aradhana242@gmail.com,147337803,IT,1964-11-18,Female,Alappuzha
+Kalpit,kalpit60@gmail.com,784095277,Sales,2006-11-10,Male,"786, Andra Circle, Kochi, Kerala, 128059"
+Manbir,manbir257@gmail.com,561479973,Finance,1970-03-18,Male,"H.No. 50, Kade Path, Palakkad, Kerala, 158692"
+Warjas,warjas301@gmail.com,274484941,IT,2006-09-15,Male,"602, Sabharwal Path, Kozhikode, Kerala, 421607"
+Tristan,tristan675@gmail.com,314289692,Marketing,1999-11-04,Female,Kollam
+Triveni,triveni5@gmail.com,475442872,Finance,1977-11-08,Male,Palakkad
+Vedant,vedant760@gmail.com,339362341,Finance,1965-09-30,Male,"654, Mallick Zila, Thiruvananthapuram, Kerala, 868501"
+Advika,advika340@gmail.com,291735734,IT,1989-09-11,Male,Kochi
+Alka,alka676@gmail.com,141078352,Finance,1969-05-23,Female,Palakkad
+Radha,radha833@gmail.com,471178705,Finance,1996-01-21,Male,"H.No. 69, D’Alia Circle, Thrissur, Kerala, 934060"
+Zinal,zinal959@gmail.com,965984448,Finance,1987-11-19,Male,Thrissur
+Ronith,ronith763@gmail.com,491079829,Sales,1983-04-11,Male,Thrissur
+Ganga,ganga988@gmail.com,769108025,IT,1978-03-25,Male,"H.No. 484, Narain Marg, Kozhikode, Kerala, 482366"
+Owen,owen751@gmail.com,760904107,Sales,1989-03-14,Male,"80, Mangat Road, Kozhikode, Kerala, 699577"
