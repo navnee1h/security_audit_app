@@ -54,26 +54,44 @@ Users with insecure passwords are automatically notified on their dashboard and 
     
 
 ## 📸 Screenshots
-
-_(You mentioned you have screenshots. Here is where you can add them! Just update the paths to where you store your images, for example, `screenshots/login.png`.)_
-
 ---
 
-### User-Facing Pages
+### 👤 User-Facing Pages
 
 **Login Page**
+<p align="center">
+  <img src="https://raw.githubusercontent.com/navnee1h/security_audit_app/refs/heads/master/screenshots/user_login.png" alt="User Login Screenshot" width="600">
+</p>
 
 **User Dashboard with Notification**
+<p align="center">
+  <img src="https://raw.githubusercontent.com/navnee1h/security_audit_app/refs/heads/master/screenshots/user_dashboard.png" alt="User Dashboard Screenshot" width="600">
+</p>
 
 ---
 
-### Admin Dashboard
+### 🧭 Admin Dashboard
 
 **Main Analytics View**
+<p align="center">
+  <img src="https://raw.githubusercontent.com/navnee1h/security_audit_app/refs/heads/master/screenshots/home_page.png" alt="Admin Home Page" width="600">
+</p>
+
+**Analytics Overview**
+<p align="center">
+  <img src="https://raw.githubusercontent.com/navnee1h/security_audit_app/refs/heads/master/screenshots/analytics.png" alt="Analytics Dashboard" width="600">
+</p>
 
 **User Management & Notify Feature**
+<p align="center">
+  <img src="https://raw.githubusercontent.com/navnee1h/security_audit_app/refs/heads/master/screenshots/users.png" alt="User Management" width="600">
+</p>
 
 **Login Audit Logs**
+<p align="center">
+  <img src="https://raw.githubusercontent.com/navnee1h/security_audit_app/refs/heads/master/screenshots/login_activity.png" alt="Login Activity Logs" width="600">
+</p>
+
 
 ---
 
