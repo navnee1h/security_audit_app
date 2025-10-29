@@ -206,7 +206,10 @@ Here is a high-level overview of the project's layout:
 │   └── notifications.csv
 └── run.py               # (ENTRY POINT) The main script to start the server.
 ```
+### Follow Me On
 
-## 🎓 Acknowledgements
+[Linkedin](https://www.linkedin.com/in/navnee1h/) | [Portfolio](https://navnee1h.github.io/terminal-portfolio)
 
-This project was created as a submission for the **[Your Course Name]** course at **[Your College Name]**.
+## 🤝 Usage & Contributions
+
+This project was built for academic purposes. If you find it useful and wish to fork, copy, or build upon this project, I would appreciate it if you could let me know!
