@@ -139,8 +139,8 @@ To run this project locally, follow these steps:
     Bash
     
     ```
-    git clone https://github.com/your-username/security-audit-app.git
-    cd security-audit-app
+    git clone https://github.com/navnee1h/Security-audit-app.git
+    cd Security-audit-app
     ```
     
 2. **Create and activate a virtual environment:**
